@@ -1,5 +1,7 @@
 from objects.potions import *
 
+from copy import deepcopy
+
 
 class AlchemyStance:
     """
@@ -76,7 +78,7 @@ class AlchemyStance:
         # устанавливаем текущие ингредиенты в данные зелья
         self.potion.ingredients = self.curr_ingrs
         # сбрасываем текущий список
-        self.curr_ingrs.clear()
+        self.curr_ingrs = []
         # перекидываем объект зелья на другую ссылку
         potion = self.potion
         # очищаем старую ссылку
@@ -152,14 +154,22 @@ class AlchemyStance:
 
 
 if __name__ == '__main__':
+    def show_data_potion(potion: Potion) -> None:
+        if not isinstance(potion, Potion):
+            raise TypeError(f'potion must be Potion but get type: {type(potion)}')
+
+        for key, value in potion.__dict__.items():
+            print(key, value, sep=': ')
+
     al_st = AlchemyStance()
     al_st.set_bubble(water_bubble)
     al_st.brewing_potion(nether_wart)
     al_st.brewing_potion(golden_carrot)
     al_st.brewing_potion(fermented_spider_eye)
     al_st.brewing_potion(redstone)
-    al_st.brewing_potion(glowstone)
-    al_st.brewing_potion(powder)
-    # al_st.brewing_potion(ghast_tear)
-    print(al_st)
 
+    potion = al_st.take_bubble()
+    al_st.set_bubble(potion)
+    potion = al_st.take_bubble()
+    print(al_st)
+    show_data_potion(potion)

@@ -57,6 +57,11 @@ class Effect:
         # уровень эффекта
         self.lvl = lvl
 
+    def __eq__(self, other):
+        """Эффекты равны, если равны их уровни и названия"""
+        if isinstance(other, Effect):
+            return self.title
+
     def __str__(self):
         return f'{self.title} {self.lvl}'
 
@@ -140,4 +145,3 @@ class Potion:
 
     def __str__(self):
         return self.title
-

@@ -35,6 +35,23 @@ class Ingredient:
         # может ли трансформировать зелье
         self.transform = transform
 
+    def __eq__(self, other) -> bool:
+        """
+        Объекты Ingredient равны, если равны их атрибуты.
+        """
+        if not isinstance(other, Ingredient):
+            raise TypeError(
+                f'other должен быть типа Ingredient. Твой тип: {type(other)}'
+            )
+        check = (
+            self.title == other.title,
+            self.time_up == other.time_up,
+            self.lvl_up == other.lvl_up,
+            self.explosion == other.explosion,
+            self.transform == other.transform,
+        )
+        return all(check)
+
     def __str__(self):
         return self.title
 
@@ -57,10 +74,17 @@ class Effect:
         # уровень эффекта
         self.lvl = lvl
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         """Эффекты равны, если равны их уровни и названия"""
-        if isinstance(other, Effect):
-            return self.title
+        if not isinstance(other, Effect):
+            raise TypeError(
+                f'other должен быть типа Effect. Твой тип: {type(other)}'
+            )
+        check = (
+            self.title == other.title,
+            self.lvl == other.lvl,
+        )
+        return all(check)
 
     def __str__(self):
         return f'{self.title} {self.lvl}'
@@ -139,9 +163,12 @@ class Potion:
         """
         Сравнение зелий производится по списку их ингредиентов!
         """
-        if isinstance(other, Potion):
-            return self.ingredients_patterns == other.ingredients_patterns
-        return False
+
+        if not isinstance(other, Potion):
+            raise TypeError(
+                f'other должен быть типа Potion. Твой тип: {type(other)}'
+            )
+        return self.ingredients_patterns == other.ingredients_patterns
 
     def __str__(self):
         return self.title

@@ -19,7 +19,6 @@ spoiled_potion = Potion(
 awkward_potion = Potion(
     title='Неуклюжее зелье',
     ingredients_patterns=[
-        water_bubble,
         nether_wart,
     ],
 )
@@ -27,7 +26,6 @@ awkward_potion = Potion(
 healing_potion = Potion(
     title='Зелье здоровья',
     ingredients_patterns=[
-        water_bubble,
         nether_wart,
         glistering_melon_slice,
     ],
@@ -40,7 +38,6 @@ healing_potion = Potion(
 fire_resistance_potion = Potion(
     title='Зелье огнестойкости',
     ingredients_patterns=[
-        water_bubble,
         nether_wart,
         magma_cream,
     ],
@@ -59,7 +56,6 @@ fire_resistance_potion = Potion(
 regeneration_potion = Potion(
     title='Зелье регенерации',
     ingredients_patterns=[
-        water_bubble,
         nether_wart,
         ghast_tear,
     ],
@@ -78,7 +74,6 @@ regeneration_potion = Potion(
 strength_potion = Potion(
     title='Зелье силы',
     ingredients_patterns=[
-        water_bubble,
         nether_wart,
         blaze_powder,
     ],
@@ -97,7 +92,6 @@ strength_potion = Potion(
 swiftness_potion = Potion(
     title='Зелье скорости',
     ingredients_patterns=[
-        water_bubble,
         nether_wart,
         sugar,
     ],
@@ -116,7 +110,6 @@ swiftness_potion = Potion(
 night_vision_potion = Potion(
     title='Зелье ночного зрения',
     ingredients_patterns=[
-        water_bubble,
         nether_wart,
         golden_carrot,
     ],
@@ -133,7 +126,6 @@ night_vision_potion = Potion(
 invisibility_potion = Potion(
     title='Зелье невидимости',
     ingredients_patterns=[
-        water_bubble,
         nether_wart,
         golden_carrot,
         fermented_spider_eye,

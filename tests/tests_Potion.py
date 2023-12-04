@@ -8,7 +8,6 @@ class TestPotion(unittest.TestCase):
         self.sp = Potion(
             title='Зелье силы',
             ingredients_patterns=[
-                water_bubble,
                 nether_wart,
                 blaze_powder,
             ],
@@ -26,7 +25,6 @@ class TestPotion(unittest.TestCase):
         self.ip = Potion(
             title='Зелье невидимости',
             ingredients_patterns=[
-                water_bubble,
                 nether_wart,
                 golden_carrot,
                 fermented_spider_eye,

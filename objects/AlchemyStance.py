@@ -1,6 +1,7 @@
 from objects.potions import *
 
 from copy import deepcopy
+from random import choice
 
 
 class AlchemyStance:
@@ -28,22 +29,27 @@ class AlchemyStance:
 
     def __str__(self):
         """Служебный вывод инфы о текущей зельке"""
-        try:
-            ingrs = [str(ingr) for ingr in self.curr_ingrs]
-            effects = [str(eff) for eff in self.bubble.effects]
-            info = f'\nВарочная стойка\n' \
-                   f'Текущее зелье: {self.bubble}\n' \
-                   f'Добавленные ингредиенты: {ingrs}\n' \
-                   f'Эффекты: {effects}\n' \
-                   f'Время действия: {self.bubble.duration.strftime("%M:%S")}\n' \
-                   f'Уровень зелья: {self.bubble.lvl}\n' \
-                   f'Взрывное ли: {self.bubble.is_explosive}\n' \
-                   f'Можно ли увелить время действия: {self.bubble.is_duration_up}\n' \
-                   f'Можно ли увеличить уровень: {self.bubble.is_lvl_up}\n'
-            return info
+        # try:
+        ingrs = [str(ingr) for ingr in self.curr_ingrs]
+        effects = [str(eff) for eff in self.bubble.effects]
+
+        duration = self.bubble.duration
+        if self.bubble.duration != 'instant':
+            duration = duration.strftime("%M:%S")
+
+        info = f'\nВарочная стойка\n' \
+               f'Текущее зелье: {self.bubble}\n' \
+               f'Добавленные ингредиенты: {ingrs}\n' \
+               f'Эффекты: {effects}\n' \
+               f'Время действия: {duration}\n' \
+               f'Уровень зелья: {self.bubble.lvl}\n' \
+               f'Взрывное ли: {self.bubble.is_explosive}\n' \
+               f'Можно ли увелить время действия: {self.bubble.is_duration_up}\n' \
+               f'Можно ли увеличить уровень: {self.bubble.is_lvl_up}\n'
+        return info
         # если в стойке potion=None, то будут проблемы с выводом
-        except AttributeError:
-            return 'Стойка пока пуста.'
+        # except AttributeError:
+        #     return 'Стойка пока пуста.'
 
     def set_bubble(self, bubble: Potion) -> None:
         """
@@ -60,7 +66,10 @@ class AlchemyStance:
             # по ингредиентам => если не они, то копируем ингредиенты в curr_ingrs
             # это нужно когда мы варим начиная не с water_bubble, а с какого-нибудь зелья
             if self.bubble not in (water_bubble, spoiled_potion):
-                self.curr_ingrs = self.bubble.ingredients_patterns
+                if not self.bubble.ingredients:
+                    self.curr_ingrs = choice(self.bubble.ingredients_patterns)
+                else:
+                    self.curr_ingrs = self.bubble.ingredients
                 # в таком случае ещё устанавливаем эффекты
                 self.__set_effects_potion()
 
@@ -94,16 +103,48 @@ class AlchemyStance:
             # сверяем текущие ингредиенты
             # с ингредиентами зелий из файла potions.py
             new_potion = None
+            search = False
             for potion in POTIONS:
-                if self.curr_ingrs == potion.ingredients_patterns:
-                    new_potion = deepcopy(potion)
+                for ingrs in potion.ingredients_patterns:
+                    if self.curr_ingrs == ingrs:
+                        new_potion = deepcopy(potion)
+                        search = True
+                        break
+                if search:
                     break
 
+
+            # эта часть отвечает за новоприбывшие зелья
+            # она подгоняет их шаблонные характеристики
+            # к характеристикам текущего зелья в bubble
             if not new_potion:
                 self.bubble = spoiled_potion
             else:
                 new_potion.lvl = self.bubble.lvl
                 new_potion.is_explosive = self.bubble.is_explosive
+
+                # если у зелья is_duration_up=False и duration != 'instant'
+                # это означает, что зелье прокачено редстоуном и нужно
+                # поставить новому зелью тайминги как у прокаченного зелья
+                if not self.bubble.is_duration_up \
+                   and self.bubble.duration == self.bubble.durations_patterns.extended:
+                    new_potion.duration = new_potion.durations_patterns.extended
+                    new_potion.is_duration_up = False
+                    new_potion.is_lvl_up = False
+
+                # если у зелья is_lvl_up=False и в паттернах таймингов
+                # присутствует время для прокачки, то это значит, что
+                # этому зелью нужно прокачать показатели лвла, эффектов
+                if (self.bubble not in (water_bubble, awkward_potion, spoiled_potion) and
+                    not self.bubble.is_lvl_up and
+                   (self.bubble.duration == self.bubble.durations_patterns.lvl_up
+                    or self.bubble.duration == 'instant')):
+
+                    if new_potion.duration != 'instant':
+                        new_potion.duration = new_potion.durations_patterns.lvl_up
+                    new_potion.is_duration_up = False
+                    new_potion.is_lvl_up = False
+
                 self.bubble = new_potion
                 del new_potion
 
@@ -122,7 +163,8 @@ class AlchemyStance:
             self.__set_effects_potion()
 
             # устанавливаем время прокаченное светопылью зелья
-            self.bubble.duration = self.bubble.durations_patterns.lvl_up
+            if self.bubble.duration != 'instant':
+                self.bubble.duration = self.bubble.durations_patterns.lvl_up
 
         elif ingr.time_up and self.bubble.is_duration_up:
             # эта ветка срабатывает, когда ингредиент
@@ -145,7 +187,15 @@ class AlchemyStance:
             # идём по ожидаемым эффектам зелья
             for group_effects in self.bubble.possible_effects:
                 # дёргаем конкретный эффект по уровню
-                effect = group_effects[self.bubble.lvl - 1]
+                # если зелье имеет постоянный эффект на всех лвлах(черепашье зелье),
+                # то проверяем передаваемый эффект на итерируемость
+                # если он итерируемый, то значит смещаем значение
+                # эффекта вместе с лвлом, а, если нет, то
+                # он просто переходит без имзенений
+                if hasattr(group_effects, '__iter__'):
+                    effect = group_effects[self.bubble.lvl - 1]
+                else:
+                    effect = group_effects
                 self.bubble.effects.append(effect)
 
 
@@ -164,8 +214,8 @@ if __name__ == '__main__':
     al_st.brewing_potion(fermented_spider_eye)
     al_st.brewing_potion(redstone)
 
-    potion = al_st.take_bubble()
-    al_st.set_bubble(potion)
-    potion = al_st.take_bubble()
+    p = al_st.take_bubble()
+    al_st.set_bubble(p)
+    p = al_st.take_bubble()
     print(al_st)
-    show_data_potion(potion)
+    show_data_potion(p)

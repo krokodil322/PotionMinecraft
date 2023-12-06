@@ -98,9 +98,9 @@ class Duration:
     __slots__ = ('begin', 'extended', 'lvl_up',)
     def __init__(
             self,
-            begin: time = time(),
-            extended: time = time(),
-            lvl_up: time = time(),
+            begin: time = None,
+            extended: time = None,
+            lvl_up: time = None,
     ):
         # обычное не прокаченное зелье
         self.begin = begin
@@ -117,15 +117,15 @@ class Potion:
     def __init__(
             self,
             title: str,
-            ingredients_patterns: list[Union[Ingredient, 'Potion']] = [],
+            ingredients_patterns: list[list[Union[Ingredient, 'Potion'], ...]] = [],
             ingredients: list[Union[Ingredient, 'Potion']] = [],
-            possible_effects: tuple[tuple[Effect]] = None,
+            possible_effects: tuple[tuple[Effect] | Effect, ...] = [],
             effects: list[Effect] = [],
             lvl: int = 0,
             is_lvl_up: bool = False,
-            duration: time = time(),
+            duration: time | str = 'instant',
             is_duration_up: bool = False,
-            durations_patterns: Duration = None,
+            durations_patterns: Duration = Duration(),
             is_explosive: bool = False,
     ):
         # название зелья
@@ -168,7 +168,9 @@ class Potion:
             raise TypeError(
                 f'other должен быть типа Potion. Твой тип: {type(other)}'
             )
-        return self.ingredients_patterns == other.ingredients_patterns
+        return any(
+            i1 == i2 for i1, i2 in zip(self.ingredients_patterns, other.ingredients_patterns)
+        )
 
     def __str__(self):
         return self.title

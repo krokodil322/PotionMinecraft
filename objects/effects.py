@@ -8,10 +8,9 @@ speed = (
     Effect(title='Скорость', lvl=2),
 )
 
+# в зельях используются только 1-го и 4-го уровня
 slowness = (
     Effect(title='Медлительность', lvl=1),
-    Effect(title='Медлительность', lvl=2),
-    Effect(title='Медлительность', lvl=3),
     Effect(title='Медлительность', lvl=4),
 )
 
@@ -40,18 +39,14 @@ regeneration = (
     Effect(title='Регенерация', lvl=2),
 )
 
+# в зельях используются только 3-ий и 4-ый уровень
 resistance = (
-    Effect(title='Сопротивление урону', lvl=1),
-    Effect(title='Сопротивление урону', lvl=2),
     Effect(title='Сопротивление урону', lvl=3),
     Effect(title='Сопротивление урону', lvl=4),
 )
 
 fire_resistance = (
     Effect(title='Сопротивление огню', lvl=1),
-    Effect(title='Сопротивление огню', lvl=2),
-    Effect(title='Сопротивление огню', lvl=3),
-    Effect(title='Сопротивление огню', lvl=4),
 )
 
 water_breathing = (

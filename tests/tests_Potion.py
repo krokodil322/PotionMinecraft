@@ -1,43 +1,13 @@
 from objects.potions import *
 
 import unittest
+from copy import deepcopy
 
 
 class TestPotion(unittest.TestCase):
     def setUp(self) -> None:
-        self.sp = Potion(
-            title='Зелье силы',
-            ingredients_patterns=[
-                nether_wart,
-                blaze_powder,
-            ],
-            possible_effects=(
-                strength,
-            ),
-            is_lvl_up=True,
-            durations_patterns=Duration(
-                begin=time(minute=3),
-                extended=time(minute=8),
-                lvl_up=time(minute=1, second=30),
-            ),
-            is_duration_up=True,
-        )
-        self.ip = Potion(
-            title='Зелье невидимости',
-            ingredients_patterns=[
-                nether_wart,
-                golden_carrot,
-                fermented_spider_eye,
-            ],
-            possible_effects=(
-                invisibility,
-            ),
-            durations_patterns=Duration(
-                begin=time(minute=3),
-                extended=time(minute=8),
-            ),
-            is_duration_up=True,
-        )
+        self.sp = deepcopy(strength_potion)
+        self.ip = deepcopy(invisibility_potion)
         self.attrs = (
             'title',
             'ingredients_patterns',

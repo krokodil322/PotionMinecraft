@@ -1,5 +1,5 @@
-from objects1.ingredients import INGREDIENTS
-from objects1.potions import POTIONS
+from objects.ingredients import INGREDIENTS
+from objects.potions import POTIONS
 
 
 # тут вспомогательные скрипты которые не участвуют в основной работе программы

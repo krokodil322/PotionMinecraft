@@ -1,4 +1,4 @@
-from models import Effect
+from models.models import Effect
 from objects.effects import strength
 
 import unittest

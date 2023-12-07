@@ -1,4 +1,4 @@
-from models import Ingredient
+from models.models import Ingredient
 
 
 # тут созданы все возможные ингредиенты для зелий
@@ -131,4 +131,21 @@ phantom_membrane = Ingredient(
     transform=True,
 )
 
-
+INGREDIENTS = {
+    1: redstone,
+    2: glowstone,
+    3: powder,
+    4: nether_wart,
+    5: fermented_spider_eye,
+    6: sugar,
+    7: glistering_melon_slice,
+    8: magma_cream,
+    9: golden_carrot,
+    10: blaze_powder,
+    11: ghast_tear,
+    12: rabbit_foot,
+    13: pufferfish,
+    14: spider_eye,
+    15: turtle_shell,
+    16: phantom_membrane,
+}

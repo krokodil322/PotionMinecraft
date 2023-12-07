@@ -1,4 +1,4 @@
-from models import Duration
+from models.models import Duration
 
 import unittest
 

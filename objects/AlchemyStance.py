@@ -8,7 +8,6 @@ class AlchemyStance:
     """
     Алхимической стойка
     """
-
     def __init__(self, is_minecraft: bool=False):
         # список добавленных ингредиентов
         self.curr_ingrs = []
@@ -29,27 +28,52 @@ class AlchemyStance:
 
     def __str__(self):
         """Служебный вывод инфы о текущей зельке"""
-        # try:
-        ingrs = [str(ingr) for ingr in self.curr_ingrs]
-        effects = [str(eff) for eff in self.bubble.effects]
+        try:
+            title = self.bubble.title
 
-        duration = self.bubble.duration
-        if self.bubble.duration != 'instant':
-            duration = duration.strftime("%M:%S")
+            ingrs = [str(ingr) for ingr in self.curr_ingrs]
+            effects = [str(eff) for eff in self.bubble.effects]
 
-        info = f'\nВарочная стойка\n' \
-               f'Текущее зелье: {self.bubble}\n' \
-               f'Добавленные ингредиенты: {ingrs}\n' \
-               f'Эффекты: {effects}\n' \
-               f'Время действия: {duration}\n' \
-               f'Уровень зелья: {self.bubble.lvl}\n' \
-               f'Взрывное ли: {self.bubble.is_explosive}\n' \
-               f'Можно ли увелить время действия: {self.bubble.is_duration_up}\n' \
-               f'Можно ли увеличить уровень: {self.bubble.is_lvl_up}\n'
-        return info
+            duration = self.bubble.duration
+            if duration == 'instant':
+                duration = 'Мгновенное'
+            elif duration  == self.bubble.durations_patterns.lvl_up:
+                duration = duration.strftime("%M:%S")
+            elif self.bubble.duration == self.bubble.durations_patterns.extended:
+                duration = duration.strftime("%M:%S") + ' увеличенное время действия'
+                title += ' c увеличенным временем действия'
+
+            if self.bubble.is_explosive:
+                is_explosive = 'Да'
+                title = 'Взрывное ' + title
+            else:
+                is_explosive = 'Нет'
+
+            if self.bubble.is_duration_up:
+                is_duration_up = 'Да'
+            else:
+                is_duration_up = 'Нет'
+
+            if self.bubble.is_lvl_up:
+                is_lvl_up = 'Да'
+            else:
+                is_lvl_up = 'Нет'
+
+            info = f'============================================================' \
+                   f'\n\tВарочная стойка\n' \
+                   f'\t\tТекущее зелье: {title}\n' \
+                   f'\t\tДобавленные ингредиенты: {", ".join(ingrs)}\n' \
+                   f'\t\tЭффекты: {", ".join(effects)}\n' \
+                   f'\t\tВремя действия: {duration}\n' \
+                   f'\t\tУровень зелья: {self.bubble.lvl}\n' \
+                   f'\t\tВзрывное ли: {is_explosive}\n' \
+                   f'\t\tМожно ли увелить время действия: {is_duration_up}\n' \
+                   f'\t\tМожно ли увеличить уровень: {is_lvl_up}\n' \
+                   f'============================================================'
+            return info
         # если в стойке potion=None, то будут проблемы с выводом
-        # except AttributeError:
-        #     return 'Стойка пока пуста.'
+        except AttributeError:
+            return 'Стойка пока пуста.'
 
     def set_bubble(self, bubble: Potion) -> None:
         """
@@ -112,7 +136,6 @@ class AlchemyStance:
                         break
                 if search:
                     break
-
 
             # эта часть отвечает за новоприбывшие зелья
             # она подгоняет их шаблонные характеристики

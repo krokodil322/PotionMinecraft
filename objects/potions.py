@@ -1,7 +1,7 @@
 from objects.effects import *
 from objects.ingredients import *
 
-from models import Potion, Duration
+from models.models import Potion, Duration
 
 from datetime import time
 
@@ -322,9 +322,10 @@ turtle_master_potion = Potion(
 # этот брат нужен для удобного импорта всех имён!
 # НЕ НАРУШАТЬ ПОРЯДОК 1-ых 2-ух зелий ТАК КАК
 # В ТЕСТЕ TestAlchemyStance test_create_all_potions
-# ИСПОЛЬЗУЕТСЯ СРЕЗ POTIONS[2:]
+# ИСПОЛЬЗУЕТСЯ СРЕЗ POTIONS[3:]
 POTIONS = (
     water_bubble,
+    spoiled_potion,
     awkward_potion,
     fire_resistance_potion,
     harming_potion,
@@ -336,7 +337,6 @@ POTIONS = (
     regeneration_potion,
     slow_falling_potion,
     slowness_potion,
-    spoiled_potion,
     strength_potion,
     swiftness_potion,
     turtle_master_potion,

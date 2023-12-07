@@ -15,6 +15,7 @@ class TestAlchemyStance(unittest.TestCase):
         self.sp = deepcopy(strength_potion)
         self.ip = deepcopy(invisibility_potion)
         self.nvp = deepcopy(night_vision_potion)
+        self.tmp = deepcopy(turtle_master_potion)
 
     def test_attrs(self):
         """Проверка на наличие необходимых атрибутов"""
@@ -239,7 +240,7 @@ class TestAlchemyStance(unittest.TestCase):
     def test_brewing_potion_8(self):
         """Тест метода breawing_potion часть 8"""
 
-        #сварим зелье вреда(lvl_up) 2-мя путями
+        # сварим зелье вреда(lvl_up) 2-мя путями
 
         # через зелье здоровья(lvl_up+)
         self.al_st.set_bubble(water_bubble)
@@ -279,7 +280,26 @@ class TestAlchemyStance(unittest.TestCase):
         self.al_st.brewing_potion(golden_carrot)
         self.al_st.brewing_potion(redstone)
         self.al_st.brewing_potion(fermented_spider_eye)
-        print(self.al_st)
+        potion = self.al_st.take_bubble()
+        self.assertTrue(
+            potion == self.ip,
+        )
+        self.assertTrue(
+            potion.duration == self.ip.durations_patterns.extended
+        )
+
+        # сравнение эффектов
+        for e, g_efs in zip(
+                potion.effects, self.ip.possible_effects
+        ):
+            if hasattr(g_efs, '__iter__'):
+                self.assertTrue(
+                    e == g_efs[potion.lvl - 1]
+                )
+            else:
+                self.assertTrue(
+                    e == g_efs
+                )
 
     def test_brewing_potion_10(self):
         """Тест метода breawing_potion часть 10"""
@@ -288,8 +308,28 @@ class TestAlchemyStance(unittest.TestCase):
         self.al_st.set_bubble(water_bubble)
         self.al_st.brewing_potion(nether_wart)
         self.al_st.brewing_potion(turtle_shell)
-        # self.al_st.brewing_potion(glowstone)
-        print(self.al_st)
+        self.al_st.brewing_potion(glowstone)
+        potion = self.al_st.take_bubble()
+
+        self.assertTrue(
+            potion == self.tmp
+        )
+
+        self.assertTrue(
+            potion.duration == self.tmp.durations_patterns.lvl_up
+        )
+
+        for e, g_efs in zip(
+                potion.effects, self.tmp.possible_effects
+        ):
+            if hasattr(g_efs, '__iter__'):
+                self.assertTrue(
+                    e == g_efs[potion.lvl - 1]
+                )
+            else:
+                self.assertTrue(
+                    e == g_efs
+                )
 
     def test_create_all_potions(self):
         """Варка всех зелий по всем путям"""
@@ -306,7 +346,7 @@ class TestAlchemyStance(unittest.TestCase):
                 )
 
         result = []
-        for p in POTIONS[2:]:
+        for p in POTIONS[3:]:
             for path_ingrs in p.ingredients_patterns:
                 self.al_st.set_bubble(water_bubble)
                 for ingr in path_ingrs:

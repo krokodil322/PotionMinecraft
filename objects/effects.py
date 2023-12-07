@@ -1,4 +1,4 @@
-from models import Effect
+from models.models import Effect
 
 
 # тут реализованы все возможные эффекты для зелий

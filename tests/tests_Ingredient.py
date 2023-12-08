@@ -1,4 +1,4 @@
-from models import Ingredient
+from models.models import Ingredient
 from objects.ingredients import redstone
 
 import unittest

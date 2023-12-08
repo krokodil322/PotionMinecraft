@@ -15,3 +15,7 @@ class TestDuration(unittest.TestCase):
     def test_attrs(self):
         """Проверка на наличие необходимых атрибутов"""
         self.assertTrue(all(hasattr(self.d, attr) for attr in self.attrs))
+
+
+if __name__ == '__main__':
+    unittest.main()

@@ -8,6 +8,7 @@ from random import choice, randint
 from copy import deepcopy
 from time import sleep
 from typing import Optional
+import os
 
 
 class PlayerManager:
@@ -108,8 +109,12 @@ class PlayerManager:
             if ingr.title.lower() == title.lower():
                 return ingr
 
-    def play(self):
-        """Игровой цикл"""
+    def play(self) -> bool:
+        """
+        Игровой цикл
+        Возвращает False, если игра закончилась.
+        True, если можно повторить партию.
+        """
         print(self)
         self.__generate_alchemy_task()
         self.al_st.set_bubble(water_bubble)
@@ -126,7 +131,7 @@ class PlayerManager:
             ingr = None
 
             if key == 'exit':
-                break
+                return False
 
             if is_digit:
                 index = int(key)
@@ -138,33 +143,29 @@ class PlayerManager:
             if not ingr:
                 print('\t\tТакого ингредиента не существует.\n')
             else:
-                print('\t\tЗелье варится...\n')
+                print('\t\tЗелье варится...\r')
                 sleep(2)
                 self.al_st.brewing_potion(ingr)
+                os.system('cls')
+                print(self)
 
                 if self.__check_shit(ingr):
                     print('Твоё текущее зелье: \n')
                     print(self.al_st)
                     print(f'Поздравляю, ты сварил говно! GAME OVER.')
-                    break
+                    return True
 
                 # важно чтобы это добавление было после проверки на говно
                 # и добавление в основной список al_st
                 # этот список используется в методе __check_shit
                 self.user_ingrs.append(ingr)
-                print(f'\t\tУспешно добавлен {ingr} в зелье\n')
-                print('Твоё текущее зелье: \n')
+                print(f'\t\tУспешно добавлен {ingr} в зелье\n\n')
                 print(self.al_st)
 
                 potion = self.al_st.take_bubble()
                 if self.__check_potion(potion):
                     print('Поздравляю, ты сварил нужное зелье!')
-                    break
+                    return True
                 else:
                     self.al_st.set_bubble(potion)
                     print('\t\tЗелье ещё не готово.\n')
-
-
-if __name__ == '__main__':
-    manager = PlayerManager()
-    manager.play()
